@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class MotorServoTest extends LinearOpMode {
   public DcMotor motor1;
   public Servo servo1;
+  public double servoPosition;
+  
     @Override
     public void runOpMode() throws InterruptedException{
       motor1 = hardwareMap.get(DcMotor.class, "motor1");
@@ -25,16 +27,16 @@ public class MotorServoTest extends LinearOpMode {
       if (gamepad1.x){
         servoPosition -= 0.01;
         servoPosition = Math.min(1.0, servoPosition);
-        servo.setPosition(servoPosition);
-        telemetry.addData(" Servo: ", servoPosition);
+        servo1.setPosition(servoPosition);
+        telemetry.addData(" Servo Position: ", servoPosition);
         telemetry.update();
         sleep(100);
       }
       if (gamepad1.y){
         servoPosition += 0.01;
         servoPosition = Math.min(1.0, servoPosition);
-        servo.setPosition(servoPosition);
-        telemetry.addData(" Servo: ", servoPosition);
+        servo1.setPosition(servoPosition);
+        telemetry.addData(" Servo Position: ", servoPosition);
         telemetry.update();
         sleep(100);
       }
