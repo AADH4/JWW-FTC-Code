@@ -1,0 +1,58 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import java.util.Random;
+@TeleOp (name = "funsies2627", group = "LinearOpMode")
+public class funsies2627 extends LinearOpMode {
+
+    
+    private Servo servo1 = null;
+    private DcMotor motor1 = null;
+    
+    private double servo1Position = 0.6361;
+
+    @Override 
+    public void runOpMode() {
+        servo1 = hardwareMap.get(Servo.class, "servo1");
+        motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        waitForStart();
+        Random rand = new Random();
+        while(opModeIsActive()){
+           if (isStopRequested()) return;
+        
+        if (gamepad1.b) {
+            motor1.setPower(1);
+        }
+        
+        if (gamepad1.x) {
+            motor1.setPower(0);
+        }
+        
+        if (gamepad1.y){
+            servo1Position -= 0.01;
+            servo1.setPosition(rand.nextDouble());
+            
+            telemetry.addData("Servo1: ", servo1Position);
+            telemetry.update();
+            sleep(100);
+        }
+
+
+        if (gamepad1.a) {
+            servo1Position += 0.01;
+            servo1Position = Math.min(1.0, servo1Position);
+            servo1.setPosition(servo1Position);
+            telemetry.addData("Servo 1: ", servo1Position);
+            telemetry.update();
+            sleep(100); 
+        }
+
+        
+    }
+} 
+        }
+        
