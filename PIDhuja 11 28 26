@@ -1,0 +1,67 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
+@TeleOp(name = "Shooter FTC Hardware Tuning", group = "Shooter")
+public class pid extends LinearOpMode {
+
+    private DcMotorEx motor1;
+
+    // TARGET VELOCITY (Encoder ticks per second)
+    public static double targetVelocity = 1000.0;
+
+    // HARDWARE PIDF CONSTANTS - Adjust these values to tune your shooter
+    public static double kP = 9.0;  
+    public static double kI = 0.0;   
+    public static double kD = 7.5;   
+    public static double kF = 12.0;
+ 
+
+    // FIXED: Moved this outside the loop so the robot remembers if it's supposed to be on or off
+    private double currentTarget = 0;
+
+    @Override
+    public void runOpMode() {
+        motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
+
+        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motor1.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        motor1.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+
+        telemetry.addData("Status", "Initialized & Coefficients Set");
+        telemetry.update();
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            // FIXED TOGGLE logic: Pressing 'A' latches it ON, pressing 'B' latches it OFF
+        
+            currentTarget = targetVelocity;
+
+            // Updates coefficients live every loop from your OnBot Java code edits
+            motor1.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+
+            // Send target to hardware
+            motor1.setVelocity(currentTarget);
+
+            // Read exact hardware performance
+            double currentVelocity = motor1.getVelocity();
+            PIDFCoefficients currentCoefficients = motor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            // Display telemetry for monitoring on Driver Station
+            telemetry.addData("Target Velocity", currentTarget);
+            telemetry.addData("Current Velocity", currentVelocity);
+            telemetry.addData("Error", currentTarget - currentVelocity);
+            telemetry.addData("Actual kP", currentCoefficients.p);
+            telemetry.addData("Actual kF", currentCoefficients.f);
+            telemetry.update();
+        }
+    }
+}
